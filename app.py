@@ -6,6 +6,7 @@ from werkzeug.utils import secure_filename
 import math
 import io
 import os
+import re
 from flask_mysqldb import MySQL, MySQLdb
 from slugify import slugify
 
@@ -85,6 +86,7 @@ def editArtikel(id_artikel):
         cur.execute("SELECT * FROM artikel where id_artikel = %s",(id_artikel,))
         artikel = cur.fetchone()
         cur.close()
+        flash("Berhasil, Artikel Telah Di Update")
         print(artikel)
         return render_template('dashboard/editArtikel.html',artikel=artikel)
     else:
@@ -141,6 +143,10 @@ def upload():
         file = request.files['file']
         if file.filename == '':
             return redirect(request.url)
+        # Memeriksa ekstensi file
+        allowed_extensions = ["wav"]
+        if file.filename.split(".")[-1].lower() not in allowed_extensions:
+            return "Hanya file dengan ekstensi WAV yang diizinkan."
 
         if file:
             recognizer = sr.Recognizer()
@@ -183,8 +189,7 @@ def download_transcript():
     if not transcript:
         abort(400)
 
-    transcript = transcript.replace('<div>', '</div>', '')
-
+    transcript = re.sub('<div>|</div>|&nbsp;', '', transcript)
     # Create a text file containing the transcript
     text_file = io.StringIO()
     text_file.write(transcript)
@@ -210,6 +215,7 @@ def storeArtikel():
     cur.execute("INSERT INTO artikel (judul,image,tanggal,status,artikel,slug) VALUES (%s,%s,%s,%s,%s,%s)",(judul,filename,tanggal,status,artikel,slug))
     mysql.connection.commit()
     cur.close()
+    flash("Berhasil, Artikel Telah Ditambah")
     return redirect(url_for('artikel'))
 
 @app.route('/add-message', methods=["POST"])
@@ -221,8 +227,8 @@ def addMessage():
     message = request.form['message']
     cur.execute("INSERT INTO message (name,email,subject,message) VALUES (%s,%s,%s,%s)",(name,email,subject,message))
     mysql.connection.commit()
-    flash('Pesan Berhasil dikirim')
     cur.close()
+    flash('Pesan Berhasil dikirim')
     return redirect(url_for('index'))
 
 @app.route('/add-testimoni', methods=["POST"])
@@ -231,10 +237,11 @@ def addTestimoni():
     nama= request.form['nama']
     jobdesk = request.form['jobdesk']
     testimoni = request.form['testimoni']
-    cur.execute("INSERT INTO testimoni (nama,jobdesk,testimoni) VALUES (%s,%s,%s)",(nama,jobdesk,testimoni))
+    testi = re.sub('<div>|</div>|&nbsp;', '', testimoni)
+    cur.execute("INSERT INTO testimoni (nama,jobdesk,testimoni) VALUES (%s,%s,%s)",(nama,jobdesk,testi))
     mysql.connection.commit()
-    flash('Testimoni Bershasil ditambahkan')
     cur.close()
+    flash('Testimoni Bershasil ditambahkan')
     return redirect(url_for('testimoni'))
 
 # AUTENTIKASI AKUN
@@ -268,6 +275,7 @@ def storeAkun():
     cur.execute("INSERT INTO users (name,email,password) VALUES (%s,%s,%s)",(name,email,password))
     mysql.connection.commit()
     cur.close()
+    flash("Berhasil, User Telah Ditambahkan")
     return redirect(url_for('register'))
 
 @app.route('/artikel-edit/<string:id_artikel>', methods=["POST"])
@@ -293,6 +301,7 @@ def hapus_data(id_artikel):
     cursor.execute("DELETE FROM artikel WHERE id_artikel=%s", (id_artikel,))
     mysql.connection.commit()
     cursor.close()
+    flash("Artikel Telah Di hapus")
     return redirect(url_for('artikel'))
 
 

@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='plugin/vendors/ti-icons/css/themify-icons.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='plugin/vendors/typicons/typicons.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='plugin/vendors/simple-line-icons/css/simple-line-icons.css') }}">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='assets/img/news-report.png') }}" >
   <link rel="stylesheet" href="{{ url_for('static', filename='plugin/vendors/css/vendor.bundle.base.css') }}">
   
   <!-- endinject -->
@@ -253,15 +254,13 @@
                                       {% include 'component/modalAkun.html' %}
                                 </p>
                                 
-                                {% with messages = get_flashed_messages(with_categories=true) %}
-                                {% if messages %}
-                                {% for category, message in messages %}
-                                    <script>
-                                    swal("Disimpan", "{{message}}", "success");
-                                    </script>
-                                {% endfor %}
-                                {% endif %}
-                                 {% endwith %}
+                                              {% with messages = get_flashed_messages() %}
+                              {% if messages %}
+                                <div class="alert alert-success">
+                                  <p>{{ messages[0] }}</p>
+                                </div>
+                              {% endif %}
+                            {% endwith %}
 
                                
                                 <div class="table-responsive">

@@ -403,7 +403,7 @@ h6 {
 }
 
 #hero:before {
-  content: "";
+  /* content: ""; */
   background: rgba(255, 255, 255, 0.8);
   position: absolute;
   bottom: 0;
@@ -412,17 +412,18 @@ h6 {
   right: 0;
 }
 
+
 #hero .container {
   padding-top: 80px;
 }
 
 #hero h1 {
   margin: 0;
-  font-size: 56px;
+  font-size: 46px;
   font-weight: 700;
   line-height: 72px;
   color: #124265;
-  font-family: "Poppins", sans-serif;
+  font-family: "Raleway", sans-serif;
 }
 
 #hero h2 {
@@ -1895,3 +1896,20 @@ section {
   color: #fff;
   text-decoration: none;
 }
+
+.logo {
+  display: flex;
+  align-items: center;
+  
+}
+
+.logo img {
+  margin-right: 10px;
+}
+
+@font-face {
+    font-family: 'Aladin-Regular';
+    src: url('/assets/fonts/Aladin-Regular.ttf') format('truetype'); /* Sesuaikan path dan format font */
+    font-weight: normal;
+    font-style: normal;
+  }
